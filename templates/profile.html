@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block main %}
+
+  <main class="container mt-3">
+    <div class="card my-4 mx-auto">
+      <div class="card-body m-2 m-md-4">
+        <article class="row">
+          <div class="col-5"><img src="{{ profile.picture }}" class="img-fluid" alt=""></div>
+          <div class="col-7">
+            <section class="teacher=info">
+
+              <h1 class="h2">{{ profile.name }}</h1>
+              <p>
+                {% for goal in profile.goals %}
+                  <span class="badge badge-secondary mr-2">{{ goals[goal] }}</span>
+                {% endfor %}
+
+                Рейтинг: {{ profile.rating }} Ставка: {{ profile.price }} / час
+              </p>
+              <p>{{ profile.about }}</p>
+
+            </section>
+          </div>
+
+          <section class="available">
+
+            <h4 class="mb-4 mt-5">Записаться на пробный урок</h4>
+            {% for day, time_dict in profile.free.items() %}
+
+              <h6 class="mt-4">{{ days_of_week[day] }}</h6>
+              {% for time, is_free in time_dict.items() %}
+
+                {% if is_free %}
+                  <a class="btn btn-outline-success mr-2"
+                     href={{ url_for('render_booking', profile_id=profile.id, day=day, time=time) }}>
+                    {{ time }} свободно
+                  </a>
+                {% endif %}
+
+              {% endfor %}
+
+              {% set has_time_free = time_dict.values() | sum %}
+              {% if not has_time_free %}
+                <p>Нет свободных уроков</p>
+              {% endif %}
+
+            {% endfor %}
+
+          </section>
+
+
+        </article>
+      </div>
+
+    </div>
+  </main>
+
+{% endblock %}
